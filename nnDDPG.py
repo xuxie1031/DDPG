@@ -8,8 +8,8 @@ class DDPGNet(nn.Module, BaseNet):
             phi_body=None, 
             actor_body=None, 
             critic_body=None,
-            actor_opt_fn,
-            critic_opt_fn,
+            actor_opt_fn=None,
+            critic_opt_fn=None,
             gpu=-1):
         super(DDPGNet, self).__init__()
         if phi_body is None: phi_body = DummyBody(state_dim)
@@ -25,8 +25,9 @@ class DDPGNet(nn.Module, BaseNet):
         self.critic_params = list(self.critic_body.parameters())+list(self.fc_critic.parameters())
         self.phi_params = list(self.phi_body.parameters())
     
-        self.actor_opt = actor_opt_fn(self.actor_params+self.phi_params)
-        self.critic_opt = critic_opt_fn(self.critic_params+self.phi_params)
+        if actor_opt_fn is not None and critic_opt_fn is not None:
+            self.actor_opt = actor_opt_fn(self.actor_params+self.phi_params)
+            self.critic_opt = critic_opt_fn(self.critic_params+self.phi_params)
 
         self.set_gpu(gpu)
 
