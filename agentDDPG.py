@@ -22,7 +22,7 @@ class DDPGAgent:
 
     def run_agent(self):
         for episode in range(self.episodes_num):
-            rewards = 0.0
+            episode_reward = 0.0
             self.random_process.reset_states()
             state = self.task.reset()
             
@@ -30,9 +30,9 @@ class DDPGAgent:
                 action = self.network.predict(np.stack([state]), True).flatten()
                 next_state, reward, terminal, _ = self.task.step(action)
                 
-                rewards += reward
+                episode_reward += reward
                 self.total_step += 1
-                self.replay.feed([state, action, next_state, reward, int(terminal)])
+                self.replay.feed([state, action, reward, next_state, int(terminal)])
 
                 state = next_state
 
@@ -68,5 +68,5 @@ class DDPGAgent:
                 
                 if terminal: break
             
-            self.episode_rewards.append(rewards)
+            self.episode_rewards.append(episode_reward)
             print('episode %d total step %d avg reward %f' % (episode, self.total_step, np.mean(np.asarray(self.episode_rewards[-100:]))))

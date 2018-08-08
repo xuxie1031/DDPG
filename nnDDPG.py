@@ -36,7 +36,7 @@ class DDPGNet(nn.Module, BaseNet):
         return self.phi_body(state)
 
     def actor(self, phi):
-        return F.tanh(self.fc_action(self.actor_body(phi)))
+        return torch.tanh(self.fc_action(self.actor_body(phi)))
 
     def critic(self, phi, a):
         return self.fc_critic(self.critic_body(phi, a))
